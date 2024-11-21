@@ -12,7 +12,7 @@ substitutions:
   sntp_server_2: "1.pool.ntp.org"
   sntp_server_3: "2.pool.ntp.org"
   wifi_fast_connect: "false"
-  log_level: "NONE"
+  log_level: "INFO"
   ipv6_enable: "false"
 
 esphome:
@@ -205,143 +205,143 @@ switch:
     on_turn_on:
       - light.turn_off: led
 
-number:
-  - platform: template
-    name: Farthest Detection          #Value range: 1.9 ~ 12m  Default: 6
-    id: Farthest_Detection
-    entity_category: config
-    min_value: 1.9
-    max_value: 12
-    initial_value: 6
-    optimistic: true
-    step: 0.1
-    restore_value: true
-    unit_of_measurement: m
-    mode: slider
-    set_action:
-      - switch.turn_off: mmwave_sensor
-      - delay: 500ms
-      - uart.write: !lambda
-          std::string ranges = "setRange 1.8 " + str_sprintf("%.1f",id(Farthest_Detection).state) + "\r\n";
-          return std::vector<uint8_t>(ranges.begin(), ranges.end());
-      - delay: 500ms
-      - uart.write: "saveConfig\r\n"
-      - delay: 500ms
-      - switch.turn_on: mmwave_sensor
+# number:
+#   - platform: template
+#     name: Farthest Detection          #Value range: 1.9 ~ 12m  Default: 6
+#     id: Farthest_Detection
+#     entity_category: config
+#     min_value: 1.9
+#     max_value: 12
+#     initial_value: 6
+#     optimistic: true
+#     step: 0.1
+#     restore_value: true
+#     unit_of_measurement: m
+#     mode: slider
+#     set_action:
+#       - switch.turn_off: mmwave_sensor
+#       - delay: 500ms
+#       - uart.write: !lambda
+#           std::string ranges = "setRange 1.8 " + str_sprintf("%.1f",id(Farthest_Detection).state) + "\r\n";
+#           return std::vector<uint8_t>(ranges.begin(), ranges.end());
+#       - delay: 500ms
+#       - uart.write: "saveConfig\r\n"
+#       - delay: 500ms
+#       - switch.turn_on: mmwave_sensor
 
-  - platform: template
-    name: Maintain Sensitivity                 #Value range: 0 ~ 9   Default Maintain sensitivity: 7    Default Trigger sensitivity: 5
-    id: Maintain_Sensitivity
-    entity_category: config
-    min_value: 0
-    max_value: 9
-    initial_value: 7
-    optimistic: true
-    step: 1
-    restore_value: true
-    mode: slider
-    set_action:
-      - switch.turn_off: mmwave_sensor
-      - delay: 500ms
-      - uart.write: !lambda
-          std::string sensitivitys = "setSensitivity " + str_sprintf("%.0f",id(Maintain_Sensitivity).state) + " " + str_sprintf("%.0f",id(Trigger_Sensitivity).state) + "\r\n";
-          return std::vector<uint8_t>(sensitivitys.begin(), sensitivitys.end());
-      - delay: 500ms
-      - uart.write: "saveConfig\r\n"
-      - delay: 500ms
-      - switch.turn_on: mmwave_sensor
+  # - platform: template
+  #   name: Maintain Sensitivity                 #Value range: 0 ~ 9   Default Maintain sensitivity: 7    Default Trigger sensitivity: 5
+  #   id: Maintain_Sensitivity
+  #   entity_category: config
+  #   min_value: 0
+  #   max_value: 9
+  #   initial_value: 7
+  #   optimistic: true
+  #   step: 1
+  #   restore_value: true
+  #   mode: slider
+  #   set_action:
+  #     - switch.turn_off: mmwave_sensor
+  #     - delay: 500ms
+  #     - uart.write: !lambda
+  #         std::string sensitivitys = "setSensitivity " + str_sprintf("%.0f",id(Maintain_Sensitivity).state) + " " + str_sprintf("%.0f",id(Trigger_Sensitivity).state) + "\r\n";
+  #         return std::vector<uint8_t>(sensitivitys.begin(), sensitivitys.end());
+  #     - delay: 500ms
+  #     - uart.write: "saveConfig\r\n"
+  #     - delay: 500ms
+  #     - switch.turn_on: mmwave_sensor
 
 
-  - platform: template
-    name: Trigger Sensitivity     #Value range: 0 ~ 9   Default Maintain sensitivity: 7    Default Trigger sensitivity: 5
-    id: Trigger_Sensitivity
-    entity_category: config
-    min_value: 0
-    max_value: 9
-    initial_value: 5
-    optimistic: true
-    step: 1
-    restore_value: true
-    mode: slider
-    set_action:
-      - switch.turn_off: mmwave_sensor
-      - delay: 500ms
-      - uart.write: !lambda
-          std::string sensitivityss = "setSensitivity " + str_sprintf("%.0f",id(Maintain_Sensitivity).state) + " " + str_sprintf("%.0f",id(Trigger_Sensitivity).state) + "\r\n";
-          return std::vector<uint8_t>(sensitivityss.begin(), sensitivityss.end());
-      - delay: 500ms
-      - uart.write: "saveConfig\r\n"
-      - delay: 500ms
-      - switch.turn_on: mmwave_sensor
+  # - platform: template
+  #   name: Trigger Sensitivity     #Value range: 0 ~ 9   Default Maintain sensitivity: 7    Default Trigger sensitivity: 5
+  #   id: Trigger_Sensitivity
+  #   entity_category: config
+  #   min_value: 0
+  #   max_value: 9
+  #   initial_value: 5
+  #   optimistic: true
+  #   step: 1
+  #   restore_value: true
+  #   mode: slider
+  #   set_action:
+  #     - switch.turn_off: mmwave_sensor
+  #     - delay: 500ms
+  #     - uart.write: !lambda
+  #         std::string sensitivityss = "setSensitivity " + str_sprintf("%.0f",id(Maintain_Sensitivity).state) + " " + str_sprintf("%.0f",id(Trigger_Sensitivity).state) + "\r\n";
+  #         return std::vector<uint8_t>(sensitivityss.begin(), sensitivityss.end());
+  #     - delay: 500ms
+  #     - uart.write: "saveConfig\r\n"
+  #     - delay: 500ms
+  #     - switch.turn_on: mmwave_sensor
 
-  - platform: template
-    name: Detection Delay      #Confirmation delay      Value range: 0 ～ 100  default 0.050 seconds.
-    id: Detection_Delay
-    entity_category: config
-    min_value: 0.1
-    max_value: 60
-    initial_value: 0.1
-    optimistic: true
-    step: 0.1
-    restore_value: true
-    unit_of_measurement: seconds
-    mode: slider
-    set_action:
-      - switch.turn_off: mmwave_sensor
-      - delay: 500ms
-      - uart.write: !lambda |-
-          std::string detections = "setLatency " + str_sprintf("%.1f",id(Detection_Delay).state) + " " + str_sprintf("%.0f",id(Fading_Time).state) + "\r\n";
-          return std::vector<uint8_t>(detections.begin(),detections.end());
-      - delay: 500ms
-      - uart.write: "saveConfig\r\n"
-      - delay: 500ms
-      - switch.turn_on: mmwave_sensor
+  # - platform: template
+  #   name: Detection Delay      #Confirmation delay      Value range: 0 ～ 100  default 0.050 seconds.
+  #   id: Detection_Delay
+  #   entity_category: config
+  #   min_value: 0.1
+  #   max_value: 60
+  #   initial_value: 0.1
+  #   optimistic: true
+  #   step: 0.1
+  #   restore_value: true
+  #   unit_of_measurement: seconds
+  #   mode: slider
+  #   set_action:
+  #     - switch.turn_off: mmwave_sensor
+  #     - delay: 500ms
+  #     - uart.write: !lambda |-
+  #         std::string detections = "setLatency " + str_sprintf("%.1f",id(Detection_Delay).state) + " " + str_sprintf("%.0f",id(Fading_Time).state) + "\r\n";
+  #         return std::vector<uint8_t>(detections.begin(),detections.end());
+  #     - delay: 500ms
+  #     - uart.write: "saveConfig\r\n"
+  #     - delay: 500ms
+  #     - switch.turn_on: mmwave_sensor
 
-  - platform: template
-    name: Fading Time           #Fade-out delay        Value range: 0.5 ～ 1500, default 15 seconds.
-    id: Fading_Time
-    entity_category: config
-    min_value: 1
-    max_value: 300
-    initial_value: 15
-    optimistic: true
-    step: 1
-    restore_value: true
-    unit_of_measurement: seconds
-    mode: auto
-    set_action:
-      - switch.turn_off: mmwave_sensor
-      - delay: 500ms
-      - uart.write: !lambda |-
-          std::string fadings = "setLatency " + str_sprintf("%.1f",id(Detection_Delay).state) + " " + str_sprintf("%.0f",id(Fading_Time).state) + "\r\n";
-          return std::vector<uint8_t>(fadings.begin(), fadings.end());
-      - delay: 500ms
-      - uart.write: "saveConfig\r\n"
-      - delay: 500ms
-      - switch.turn_on: mmwave_sensor
+  # - platform: template
+  #   name: Fading Time           #Fade-out delay        Value range: 0.5 ～ 1500, default 15 seconds.
+  #   id: Fading_Time
+  #   entity_category: config
+  #   min_value: 1
+  #   max_value: 300
+  #   initial_value: 15
+  #   optimistic: true
+  #   step: 1
+  #   restore_value: true
+  #   unit_of_measurement: seconds
+  #   mode: auto
+  #   set_action:
+  #     - switch.turn_off: mmwave_sensor
+  #     - delay: 500ms
+  #     - uart.write: !lambda |-
+  #         std::string fadings = "setLatency " + str_sprintf("%.1f",id(Detection_Delay).state) + " " + str_sprintf("%.0f",id(Fading_Time).state) + "\r\n";
+  #         return std::vector<uint8_t>(fadings.begin(), fadings.end());
+  #     - delay: 500ms
+  #     - uart.write: "saveConfig\r\n"
+  #     - delay: 500ms
+  #     - switch.turn_on: mmwave_sensor
 
-  - platform: template
-    name: Blockade Time                  #Configure block time        Value range: 1 ～ 255, default 1 seconds.
-    id: Blockade_Time
-    entity_category: config
-    min_value: 1
-    max_value: 255
-    initial_value: 1
-    optimistic: true
-    step: 1
-    restore_value: true
-    unit_of_measurement: seconds
-    mode: slider
-    set_action:
-      - switch.turn_off: mmwave_sensor
-      - delay: 500ms
-      - uart.write: !lambda
-          std::string blockades = "setInhibit " + str_sprintf("%.0f",x) + "\r\n";
-          return std::vector<uint8_t>(blockades.begin(), blockades.end());
-      - delay: 500ms
-      - uart.write: "saveConfig\r\n"
-      - delay: 500ms
-      - switch.turn_on: mmwave_sensor
+  # - platform: template
+  #   name: Blockade Time                  #Configure block time        Value range: 1 ～ 255, default 1 seconds.
+  #   id: Blockade_Time
+  #   entity_category: config
+  #   min_value: 1
+  #   max_value: 255
+  #   initial_value: 1
+  #   optimistic: true
+  #   step: 1
+  #   restore_value: true
+  #   unit_of_measurement: seconds
+  #   mode: slider
+  #   set_action:
+  #     - switch.turn_off: mmwave_sensor
+  #     - delay: 500ms
+  #     - uart.write: !lambda
+  #         std::string blockades = "setInhibit " + str_sprintf("%.0f",x) + "\r\n";
+  #         return std::vector<uint8_t>(blockades.begin(), blockades.end());
+  #     - delay: 500ms
+  #     - uart.write: "saveConfig\r\n"
+  #     - delay: 500ms
+  #     - switch.turn_on: mmwave_sensor
 
 button:
   - platform: factory_reset
@@ -367,10 +367,10 @@ button:
     entity_category: config
     internal: true
 
-  - platform: safe_mode
-    name: "Safe Mode"
-    internal: false
-    entity_category: config
+  # - platform: safe_mode
+  #   name: "Safe Mode"
+  #   internal: false
+  #   entity_category: config
 
   - platform: template
     name: "Restart_mmWave"
@@ -388,50 +388,50 @@ button:
       - delay: 1s
       - button.press: restart_esp
 
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: "IP Address"
-      entity_category: diagnostic
-    ssid:
-      name: "Connected SSID"
-      entity_category: diagnostic
-    mac_address:
-      name: "Mac Address"
-      entity_category: diagnostic
+# text_sensor:
+#   - platform: wifi_info
+#     ip_address:
+#       name: "IP Address"
+#       entity_category: diagnostic
+#     ssid:
+#       name: "Connected SSID"
+#       entity_category: diagnostic
+#     mac_address:
+#       name: "Mac Address"
+#       entity_category: diagnostic
 
   #  Creates a sensor showing when the device was last restarted
-  - platform: template
-    name: 'Last Restart'
-    id: device_last_restart
-    icon: mdi:clock
-    entity_category: diagnostic
+  # - platform: template
+  #   name: 'Last Restart'
+  #   id: device_last_restart
+  #   icon: mdi:clock
+  #   entity_category: diagnostic
 #    device_class: timestamp
 
   #  Creates a sensor of the uptime of the device, in formatted days, hours, minutes and seconds
-  - platform: template
-    name: "Uptime"
-    entity_category: diagnostic
-    lambda: |-
-      int seconds = (id(uptime_sensor).state);
-      int days = seconds / (24 * 3600);
-      seconds = seconds % (24 * 3600);
-      int hours = seconds / 3600;
-      seconds = seconds % 3600;
-      int minutes = seconds /  60;
-      seconds = seconds % 60;
-      if ( days > 3650 ) {
-        return { "Starting up" };
-      } else if ( days ) {
-        return { (String(days) +"d " + String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
-      } else if ( hours ) {
-        return { (String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
-      } else if ( minutes ) {
-        return { (String(minutes) +"m "+ String(seconds) +"s").c_str() };
-      } else {
-        return { (String(seconds) +"s").c_str() };
-      }
-    icon: mdi:clock-start
+  # - platform: template
+  #   name: "Uptime"
+  #   entity_category: diagnostic
+  #   lambda: |-
+  #     int seconds = (id(uptime_sensor).state);
+  #     int days = seconds / (24 * 3600);
+  #     seconds = seconds % (24 * 3600);
+  #     int hours = seconds / 3600;
+  #     seconds = seconds % 3600;
+  #     int minutes = seconds /  60;
+  #     seconds = seconds % 60;
+  #     if ( days > 3650 ) {
+  #       return { "Starting up" };
+  #     } else if ( days ) {
+  #       return { (String(days) +"d " + String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
+  #     } else if ( hours ) {
+  #       return { (String(hours) +"h " + String(minutes) +"m "+ String(seconds) +"s").c_str() };
+  #     } else if ( minutes ) {
+  #       return { (String(minutes) +"m "+ String(seconds) +"s").c_str() };
+  #     } else {
+  #       return { (String(seconds) +"s").c_str() };
+  #     }
+  #   icon: mdi:clock-start
 
 # time:
 #   - platform: sntp
